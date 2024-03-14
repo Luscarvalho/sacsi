@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}{{ title }}{% endblock %}
+{% block conteudo %}
+    <section id="content" class="flex justify-center items-center w-full">
+        <form method="post" class="w-2/6">
+            <h1 class="text-xl font-bold uppercase mb-5">Excluir Aproveitamento</h1>
+            {% csrf_token %}
+            <h3 class="text-center text-lg font-medium uppercase">Confirme para excluir definitivamente:</h3>
+            <p class="text-center font-bold text-2xl uppercase">"{{ object }}"</p>
+            <input class="btn font-bold text-white bg-red-400 hover:bg-red-500 duration-150 cursor-pointer mt-5"
+                   type="submit"
+                   value="EXCLUIR" />
+        </form>
+    </section>
+{% endblock %}

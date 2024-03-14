@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}{{ title }}{% endblock %}
+{% block conteudo %}
+    <section id="content" class="flex justify-center items-center w-full">
+        <form method="post" class="w-2/5">
+            <h1 class="text-xl font-bold uppercase mb-5">{{ title }}</h1>
+            {% csrf_token %} {{ form.as_p }}
+            <input class="btn font-bold bg-green-400 hover:bg-green-500 duration-150 cursor-pointer mt-5"
+                   type="submit"
+                   value="CADASTRAR" />
+        </form>
+    </section>
+{% endblock %}

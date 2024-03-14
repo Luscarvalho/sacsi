@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Modalidades{% endblock %}
+{% block conteudo %}
+    <section id="content" class="w-full flex items-center justify-center gap-x-8">
+        <div class="text-center rounded-lg p-6 border border-gray-300 shadow-lg">
+            <p class="font-medium text-3xl mb-2">Ensino</p>
+            <img class="mb-8" src="{% static 'img/Ensino.png' %}" alt="Ensino" />
+            <a class="bg-slate-300 font-medium hover:bg-slate-400 duration-150 text-xl rounded-md py-2 px-4"
+               href="{% url 'cadastrar_aproveitamento' aluno.id_aluno 'ENS' %}">Gerenciar</a>
+        </div>
+        <div class="text-center rounded-lg p-6 border border-gray-300 shadow-lg">
+            <p class="font-medium text-3xl mb-2">Pesquisa</p>
+            <img class="mb-8" src="{% static 'img/Pesquisa.png' %}" alt="Pesquisa" />
+            <a class="bg-slate-300 font-medium hover:bg-slate-400 duration-150 text-xl rounded-md py-2 px-4"
+               href="{% url 'cadastrar_aproveitamento' aluno.id_aluno 'PES' %}">Gerenciar</a>
+        </div>
+        <div class="text-center rounded-lg p-6 border border-gray-300 shadow-lg">
+            <p class="font-medium text-3xl mb-2">Extensão</p>
+            <img class="mb-8" src="{% static 'img/Extensao.png' %}" alt="Extensão" />
+            <a class="bg-slate-300 font-medium hover:bg-slate-400 duration-150 text-xl rounded-md py-2 px-4"
+               href="{% url 'cadastrar_aproveitamento' aluno.id_aluno 'EXT' %}">Gerenciar</a>
+        </div>
+    </section>
+{% endblock %}
