@@ -9,6 +9,9 @@ class AproveitamentoForm(forms.ModelForm):
     class Meta:
         model = Aproveitamento
         fields = ['categoria', 'descricao', 'semestre', 'ano', 'ch']
+        widgets = {
+            'categoria': forms.Select(attrs={'class': 'select'}),
+        }
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -49,12 +52,14 @@ class AproveitamentoEditForm(forms.ModelForm):
     class Meta:
         model = Aproveitamento
         fields = ['categoria', 'descricao', 'semestre', 'ano', 'ch']
+        widgets = {
+            'categoria': forms.HiddenInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         self.id_aluno = kwargs.pop('id_aluno', None)
         super().__init__(*args, **kwargs)
-        self.fields['categoria'].widget = forms.HiddenInput()
         self.original_ch = self.instance.ch
 
     def clean(self):
@@ -74,9 +79,10 @@ class AproveitamentoEditForm(forms.ModelForm):
                                                      aluno=self.id_aluno).aggregate(Sum('ch'))['ch__sum'] or 0
             total_ch -= self.original_ch
             restante_ch = categoria.ap_max - total_ch
+            print(categoria)
             if total_ch + ch > categoria.ap_max:
                 cleaned_data['ch'] = restante_ch
                 (messages.warning(self.request,
-                                  f'A carga horária de {categoria} foi ajustada de {ch} para {restante_ch}. '
+                                  f'A carga horária de {categoria.codigo} foi ajustada de {ch} para {restante_ch}. '
                                   'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
         return cleaned_data

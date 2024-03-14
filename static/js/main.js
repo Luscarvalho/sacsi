@@ -1,3 +1,5 @@
+// noinspection JSCheckFunctionSignatures
+
 function search() {
     let input, filter, table, tr, td, i, txtValue;
     input = document.getElementById("search");
@@ -23,8 +25,8 @@ function sortTable(columnIndex) {
     const isAscending = table.dataset.sortOrder === "asc" || table.dataset.sortOrder === undefined;
 
     rows.sort((rowA, rowB) => {
-        const cellA = rowA.cells[columnIndex].textContent.toLowerCase();;
-        const cellB = rowB.cells[columnIndex].textContent.toLowerCase();;
+        const cellA = rowA.cells[columnIndex].textContent.toLowerCase();
+        const cellB = rowB.cells[columnIndex].textContent.toLowerCase();
 
         if (cellA < cellB) {
             return isAscending ? -1 : 1;
@@ -39,15 +41,21 @@ function sortTable(columnIndex) {
     table.dataset.sortOrder = isAscending ? "desc" : "asc";
 }
 
-function back() {
-    window.history.back();
-}
+// function back() {
+//     window.history.back();
+// }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     const dropdownButton = document.querySelector('[data-collapse-toggle="dropdown-example"]');
     const dropdownMenu = document.querySelector('#dropdown-example');
     dropdownButton.addEventListener('click', (event) => {
         event.preventDefault();
         dropdownMenu.classList.toggle('hidden');
+    });
+});
+
+$(document).ready(function() {
+    $('.select').select2({
+        minimumResultsForSearch: Infinity
     });
 });
