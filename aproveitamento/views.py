@@ -73,7 +73,8 @@ class CadastrarAproveitamento(LoginRequiredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs.update({
             'id_aluno': self.id_aluno,
-            'modalidade': self.modalidade
+            'modalidade': self.modalidade,
+            'request': self.request
         })
         return kwargs
 
@@ -94,7 +95,10 @@ class EditarAproveitamento(LoginRequiredMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({'id_aluno': self.id_aluno})
+        kwargs.update({
+            'id_aluno': self.id_aluno,
+            'request': self.request
+             })
         return kwargs
 
     def form_valid(self, form):

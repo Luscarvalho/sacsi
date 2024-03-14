@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
-
+from django.contrib import messages
 from .models import Aproveitamento, Atividade
 
 
@@ -11,7 +11,7 @@ class AproveitamentoForm(forms.ModelForm):
         fields = ['categoria', 'descricao', 'semestre', 'ano', 'ch']
 
     def __init__(self, *args, **kwargs):
-        self.request = None
+        self.request = kwargs.pop('request', None)
         self.id_aluno = kwargs.pop('id_aluno', None)
         self.modalidade = kwargs.pop('modalidade', None)
         super().__init__(*args, **kwargs)
@@ -36,6 +36,9 @@ class AproveitamentoForm(forms.ModelForm):
             restante_ch = categoria.ap_max - total_ch
             if total_ch + ch > categoria.ap_max:
                 cleaned_data['ch'] = restante_ch
+                (messages.warning(self.request,
+                                  f'A carga horária de {categoria} foi ajustada de {ch} para {restante_ch}. '
+                                  'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
             if total_ch == categoria.ap_max:
                 raise ValidationError(
                     f"A carga horária da atividade {categoria} já atingiu o limite máximo de aproveitamento.")
@@ -48,7 +51,7 @@ class AproveitamentoEditForm(forms.ModelForm):
         fields = ['categoria', 'descricao', 'semestre', 'ano', 'ch']
 
     def __init__(self, *args, **kwargs):
-        self.request = None
+        self.request = kwargs.pop('request', None)
         self.id_aluno = kwargs.pop('id_aluno', None)
         super().__init__(*args, **kwargs)
         self.fields['categoria'].widget = forms.HiddenInput()
@@ -73,4 +76,7 @@ class AproveitamentoEditForm(forms.ModelForm):
             restante_ch = categoria.ap_max - total_ch
             if total_ch + ch > categoria.ap_max:
                 cleaned_data['ch'] = restante_ch
+                (messages.warning(self.request,
+                                  f'A carga horária de {categoria} foi ajustada de {ch} para {restante_ch}. '
+                                  'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
         return cleaned_data

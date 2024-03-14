@@ -3,6 +3,13 @@
 {% block conteudo %}
     <!--suppress HtmlFormInputWithoutLabel -->
     <h1 class="text-xl font-bold uppercase mb-5">Nome: {{ aluno_nome }}</h1>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %}class="{{ message.tags }} text-lg text-red-600 mb-5 font-medium" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <section class="w-full h-14 mb-5 flex justify-between gap-x-3">
         <input class="w-full h-full border border-gray-300 px-5 rounded-lg shadow-md"
                type="text"
