@@ -1,5 +1,6 @@
 import io
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import FileResponse
 from django.views.generic.list import ListView
@@ -19,6 +20,7 @@ class RelatorioGeral(LoginRequiredMixin, ListView):
     context_object_name = 'alunos'
 
 
+@login_required
 def exportar_dados(request):
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
@@ -52,6 +54,7 @@ def exportar_dados(request):
     return FileResponse(buf, as_attachment=True, filename='relatorio.pdf')
 
 
+@login_required
 def exportar_dados_aluno_simples(request, pk):
     aluno = Aluno.objects.get(id_aluno=pk)
 
@@ -107,6 +110,7 @@ def exportar_dados_aluno_simples(request, pk):
     return FileResponse(buf, as_attachment=True, filename=f'Relatório Simples - {aluno.nome}.pdf')
 
 
+@login_required
 def exportar_dados_aluno_completo(request, pk):
     aluno = Aluno.objects.get(id_aluno=pk)
 
