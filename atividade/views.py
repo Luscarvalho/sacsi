@@ -18,9 +18,6 @@ class ListarEnsino(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Ensino"
-        context['url_cadastrar'] = "cadastrar_atividade_ensino"
-        context['url_editar'] = "editar_atividade_ensino"
-        context['url_excluir'] = "apagar_atividade_ensino"
         return context
 
 
@@ -37,9 +34,6 @@ class ListarPesquisa(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Pesquisa"
-        context['url_cadastrar'] = "cadastrar_atividade_pesquisa"
-        context['url_editar'] = "editar_atividade_pesquisa"
-        context['url_excluir'] = "apagar_atividade_pesquisa"
         return context
 
 
@@ -56,9 +50,6 @@ class ListarExtensao(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Extensão"
-        context['url_cadastrar'] = "cadastrar_atividade_extensao"
-        context['url_editar'] = "editar_atividade_extensao"
-        context['url_excluir'] = "apagar_atividade_extensao"
         return context
 
 

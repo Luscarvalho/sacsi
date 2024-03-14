@@ -8,7 +8,12 @@
             {% csrf_token %} {{ form.as_p }}
             <input class="btn font-bold bg-green-400 hover:bg-green-500 duration-150 cursor-pointer mt-2"
                    type="submit"
-                   value="CADASTRAR" />
+                   {% if 'cadastrar' in request.path %}
+                   value="CADASTRAR"
+                   {% elif 'editar' in request.path %}
+                   value="EDITAR"
+                   {% endif %}
+            />
         </form>
     </section>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block titulo %}{{ title }}{% endblock %}
+{% block titulo %}Atividades - {{ title }}{% endblock %}
 {% block conteudo %}
+    <!--suppress HtmlFormInputWithoutLabel -->
     <h1 class="text-xl font-bold uppercase mb-5">Atividades - {{ title }}</h1>
     <section class="w-full h-14 mb-5 flex justify-between gap-x-3">
         <input class="w-full h-full px-5 border border-gray-300 rounded-lg shadow-md"
@@ -10,7 +11,14 @@
                onkeyup="search()"
                placeholder="Pesquisar por nome...">
         <a class="w-1/5 h-full flex justify-center items-center rounded-lg shadow-lg bg-green-300 hover:bg-green-400 uppercase font-medium"
-           href="{% url url_cadastrar %}">Cadastrar</a>
+        {% if 'ensino' in request.path %}
+            href="{% url 'cadastrar_atividade_ensino' %}">
+        {% elif 'pesquisa' in request.path %}
+            href="{% url 'cadastrar_atividade_pesquisa' %}">
+        {% elif 'extensao' in request.path %}
+            href="{% url 'cadastrar_atividade_extensao' %}">
+        {% endif %}
+        Cadastrar</a>
     </section>
     <div class="relative overflow-x-auto shadow-lg sm:rounded-lg">
         <table id="myTable"
@@ -100,15 +108,29 @@
                     <tr class="bg-white border-b">
                         <th scope="row"
                             class="px-6 py-4 font-bold text-gray-950 whitespace-nowrap">{{ atividade.codigo }}</th>
-                        <td class="px-6 py-4 max-w-60 overflow-hidden overflow-ellipsis whitespace-nowrap cursor-pointer" title="{{ atividade.descricao }}">{{ atividade.descricao }}</td>
+                        <td class="px-6 py-4 max-w-80 overflow-hidden overflow-ellipsis whitespace-nowrap cursor-pointer" title="{{ atividade.descricao }}">{{ atividade.descricao }}</td>
                         <td class="px-6 py-4">{{ atividade.ch_min }}</td>
                         <td class="px-6 py-4">{{ atividade.ch_max }}</td>
                         <td class="px-6 py-4">{{ atividade.ap_max }}</td>
                         <td class="text-right px-6">
-                            <a href="{% url url_editar atividade.id_atividade %}"
-                               class="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg">Editar</a>
-                            <a href="{% url url_excluir atividade.id_atividade %}"
-                               class="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg">Excluir</a>
+                            <a class="py-2 px-3 font-medium text-indigo-600 hover:text-indigo-500 duration-150 hover:bg-gray-50 rounded-lg"
+                            {% if 'ensino' in request.path %}
+                                href="{% url 'editar_atividade_ensino' atividade.id_atividade %}">
+                            {% elif 'pesquisa' in request.path %}
+                                href="{% url 'editar_atividade_pesquisa' atividade.id_atividade %}">
+                            {% elif 'extensao' in request.path %}
+                                href="{% url 'editar_atividade_extensao' atividade.id_atividade %}">
+                            {% endif %}
+                            Editar</a>
+                            <a class="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
+                            {% if 'ensino' in request.path %}
+                                href="{% url 'apagar_atividade_ensino' atividade.id_atividade %}">
+                            {% elif 'pesquisa' in request.path %}
+                                href="{% url 'apagar_atividade_pesquisa' atividade.id_atividade %}">
+                            {% elif 'extensao' in request.path %}
+                                href="{% url 'apagar_atividade_extensao' atividade.id_atividade %}">
+                            {% endif %}
+                            Excluir</a>
                         </td>
                     </tr>
                 {% empty %}
