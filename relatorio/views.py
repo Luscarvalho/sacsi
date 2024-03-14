@@ -1,15 +1,15 @@
 import io
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.http import FileResponse
 from django.views.generic.list import ListView
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, TableStyle, LongTable, SimpleDocTemplate, Spacer
+
 from aproveitamento.models import Aproveitamento, Aluno
 from atividade.models import Atividade
 
@@ -22,33 +22,55 @@ class RelatorioGeral(LoginRequiredMixin, ListView):
 
 @login_required
 def exportar_dados(request):
-    buf = io.BytesIO()
-    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
-    textob = c.beginText()
-    textob.setTextOrigin(inch, inch * 1.5)
-    textob.setFont("Helvetica", 14)
-
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(inch, inch, "Relatório de Aproveitamento")
-
-    lines = []
-
     alunos = Aluno.objects.all()
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=letter)
+
+    elements = []
+
+    style_header = ParagraphStyle(
+        'header',
+        fontSize=12,
+        alignment=1,
+        fontName='Helvetica-Bold',
+    )
+
+    style_cels = ParagraphStyle(
+        'cels',
+        fontSize=11
+    )
 
     for aluno in alunos:
-        lines.append(aluno.nome)
-        lines.append("")
-        lines.append('Código | Atividade | Carga Horária')
-        for aproveitamento in Aproveitamento.objects.filter(aluno=aluno):
-            lines.append(f'{aproveitamento.categoria} | {aproveitamento.descricao} | {aproveitamento.ch}')
-        lines.append('')
+        data = [[Paragraph(aluno.nome, style_header)], ['Código', 'Atividade', 'CH Realizada', 'AP Máximo']]
+        aproveitamentos = Aproveitamento.objects.filter(aluno=aluno)
+        codigos = aproveitamentos.values('categoria__codigo').annotate(total_ch=Sum('ch'))
 
-    for line in lines:
-        textob.textLine(line)
+        for codigo in codigos:
+            aproveitamento_maximo = (
+                Aproveitamento.objects.filter(categoria__codigo=codigo['categoria__codigo']).first().categoria.ap_max)
+            descricao = (
+                Aproveitamento.objects.filter(
+                    categoria__codigo=codigo['categoria__codigo']).first().categoria.descricao)
+            data.append([codigo["categoria__codigo"],
+                         Paragraph(descricao, style_cels),
+                         codigo["total_ch"],
+                         aproveitamento_maximo])
+        table = LongTable(data, colWidths=[50, '*', 80, 80])
+        elements.append(table)
+        elements.append(Spacer(1, 20))
 
-    c.drawText(textob)
-    c.showPage()
-    c.save()
+        table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('FONTNAME', (0, 0), (-1, 1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 1), (-1, -1), 11),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('SPAN', (0, 0), (3, 0)),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),  # Adiciona espaço no topo das células
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ]))
+
+    doc.build(elements)
     buf.seek(0)
 
     return FileResponse(buf, as_attachment=True, filename='relatorio.pdf')
