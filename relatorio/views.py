@@ -162,7 +162,7 @@ def exportar_dados_aluno_completo(request, pk):
 
     for aproveitamento in aproveitamentos:
         data.append([aproveitamento.categoria.codigo,
-                     aproveitamento.descricao,
+                     Paragraph(aproveitamento.descricao, style_cels),
                      f'{aproveitamento.ch}'])
 
     table = LongTable(data, colWidths=[50, '*', 80])
