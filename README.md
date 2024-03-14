@@ -7,7 +7,7 @@ Para começar, siga os passos abaixo para configurar o ambiente de desenvolvimen
 Primeiramente, clone este repositório em sua máquina local usando o seguinte comando:
 
 ```shell
-https://github.com/Luscarvalho/sacsi.git
+git clone https://github.com/Luscarvalho/sacsi.git
 cd sacsi
 ```
 
