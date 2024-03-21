@@ -19,7 +19,8 @@ class AproveitamentoForm(forms.ModelForm):
         self.modalidade = kwargs.pop('modalidade', None)
         super().__init__(*args, **kwargs)
         if self.modalidade is not None:
-            self.fields['categoria'].queryset = Atividade.objects.filter(modalidade=self.modalidade)
+            self.fields['categoria'].queryset = Atividade.objects.filter(
+                modalidade=self.modalidade)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -30,21 +31,29 @@ class AproveitamentoForm(forms.ModelForm):
             raise ValidationError("A carga horária não pode ser 0.")
 
         if categoria and ch:
-            if ch < categoria.ch_min or ch > categoria.ch_max:
+            # if ch < categoria.ch_min or ch > categoria.ch_max:
+            #     raise ValidationError(
+            #         f"A carga horária deve estar entre {categoria.ch_min} e {categoria.ch_max} horas.")
+
+            if ch > categoria.ch_max:
                 raise ValidationError(
-                    f"A carga horária deve estar entre {categoria.ch_min} e {categoria.ch_max} horas.")
+                    f"A carga horária deve ter no máximo {categoria.ch_max} horas.")
 
             total_ch = Aproveitamento.objects.filter(categoria=categoria,
                                                      aluno=self.id_aluno).aggregate(Sum('ch'))['ch__sum'] or 0
             restante_ch = categoria.ap_max - total_ch
-            if total_ch + ch > categoria.ap_max:
+            if ch > restante_ch:
                 cleaned_data['ch'] = restante_ch
+                if restante_ch == 0:
+                    raise ValidationError(
+                        f"A carga horária da atividade {categoria} já atingiu o limite máximo de aproveitamento.")
                 (messages.warning(self.request,
-                                  f'A carga horária de {categoria} foi ajustada de {ch} para {restante_ch}. '
+                                  f'A carga horária de {categoria} foi ajustada de {
+                                      ch} para {restante_ch}. '
                                   'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
-            if total_ch == categoria.ap_max:
-                raise ValidationError(
-                    f"A carga horária da atividade {categoria} já atingiu o limite máximo de aproveitamento.")
+            if ch == restante_ch:
+                (messages.success(self.request,
+                                  f'A carga horária de {categoria} está completa!'))
         return cleaned_data
 
 
@@ -71,18 +80,18 @@ class AproveitamentoEditForm(forms.ModelForm):
             raise ValidationError("A carga horária não pode ser 0.")
 
         if categoria and ch:
-            if ch < categoria.ch_min or ch > categoria.ch_max:
+            if ch > categoria.ch_max:
                 raise ValidationError(
-                    f"A carga horária deve estar entre {categoria.ch_min} e {categoria.ch_max} horas.")
+                    f"A carga horária deve ter no máximo {categoria.ch_max} horas.")
 
             total_ch = Aproveitamento.objects.filter(categoria=categoria,
                                                      aluno=self.id_aluno).aggregate(Sum('ch'))['ch__sum'] or 0
             total_ch -= self.original_ch
             restante_ch = categoria.ap_max - total_ch
-            print(categoria)
             if total_ch + ch > categoria.ap_max:
                 cleaned_data['ch'] = restante_ch
                 (messages.warning(self.request,
-                                  f'A carga horária de {categoria.codigo} foi ajustada de {ch} para {restante_ch}. '
+                                  f'A carga horária de {categoria.codigo} foi ajustada de {
+                                      ch} para {restante_ch}. '
                                   'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
         return cleaned_data

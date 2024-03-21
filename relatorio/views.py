@@ -220,12 +220,12 @@ def exportar_dados_aluno_completo(request, pk):
 
     total_ch = aproveitamentos.aggregate(total_ch=Sum('ch'))['total_ch'] or 0
     elements.append(Paragraph(f'Total de horas: {total_ch} horas', style))
-    if total_ch > 170:
-        elements.append(Paragraph(f'Horas excedentes: {total_ch - 170} horas', style))
-    elif total_ch == 170:
+    if total_ch > 120:
+        elements.append(Paragraph(f'Horas excedentes: {total_ch - 120} horas', style))
+    elif total_ch == 120:
         elements.append(Paragraph('Horas completas', style))
     else:
-        elements.append(Paragraph(f'Falta para completar: {170 - total_ch} horas', style))
+        elements.append(Paragraph(f'Falta para completar: {120 - total_ch} horas', style))
 
     doc.build(elements)
 
