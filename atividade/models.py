@@ -17,4 +17,4 @@ class Atividade(models.Model):
     ap_max = models.IntegerField()
 
     def __str__(self):
-        return self.codigo + ' - ' + self.descricao
+        return self.codigo + ' - ' + self.descricao + ' - Min: ' + str(self.ch_min) + ' - Max: ' + str(self.ch_max)
