@@ -84,7 +84,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'logout' %}"
+                        <a id="logout-link"
                            class="flex items-center p-2 text-base font-medium rounded-lg hover:bg-slate-300">
                             <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75"
                                  aria-hidden="true"
@@ -102,6 +102,17 @@
         </aside>
         <div class="p-8 sm:ml-64">
             {% block conteudo %}{% endblock %}
+        </div>
+        <div id="modal_logout" class="modal">
+            <div class="modal-content">
+              <h4>Tem certeza de que deseja sair?</h4>
+              <div class="modal-footer">
+                <a href="{% url 'logout' %}" class="bg-green-400 hover:bg-green-500 duration-150 cursor-pointer font-medium" id="confirmar">Confirmar</a>
+                <a onclick="cancelar()" class="bg-red-400 hover:bg-red-500 duration-150 cursor-pointer" id="cancelar">
+                  Cancelar
+                </a>
+              </div>
+            </div>
         </div>
         <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
