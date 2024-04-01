@@ -48,8 +48,7 @@ class AproveitamentoForm(forms.ModelForm):
                     raise ValidationError(
                         f"A carga horária da atividade {categoria} já atingiu o limite máximo de aproveitamento.")
                 (messages.warning(self.request,
-                                  f'A carga horária de {categoria} foi ajustada de {
-                                      ch} para {restante_ch}. '
+                                  f'A carga horária de {categoria} foi ajustada de {ch} para {restante_ch}. '
                                   'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
             if ch == restante_ch:
                 (messages.success(self.request,
@@ -91,7 +90,6 @@ class AproveitamentoEditForm(forms.ModelForm):
             if total_ch + ch > categoria.ap_max:
                 cleaned_data['ch'] = restante_ch
                 (messages.warning(self.request,
-                                  f'A carga horária de {categoria.codigo} foi ajustada de {
-                                      ch} para {restante_ch}. '
+                                  f'A carga horária de {categoria.codigo} foi ajustada de {ch} para {restante_ch}.'
                                   'Isso ocorreu para não exceder o limite máximo de aproveitamento.'))
         return cleaned_data
